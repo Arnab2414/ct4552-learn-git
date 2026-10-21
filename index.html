@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BrightWave Studio</title>
+    <style>
+      :root {
+        --bg: #0f172a;
+        --bg-soft: #111827;
+        --panel: rgba(17, 24, 39, 0.8);
+        --panel-alt: #1f2937;
+        --primary: #8b5cf6;
+        --secondary: #22c55e;
+        --text: #e5e7eb;
+        --muted: #9ca3af;
+        --border: rgba(255, 255, 255, 0.1);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(135deg, #020817, #111827 45%, #0f172a);
+        color: var(--text);
+        line-height: 1.6;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .container {
+        width: min(1120px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        backdrop-filter: blur(10px);
+        background: rgba(15, 23, 42, 0.7);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 72px;
+      }
+
+      .logo {
+        font-size: 1.4rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+      }
+
+      .logo span {
+        color: var(--primary);
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        color: var(--muted);
+      }
+
+      .nav-links a:hover {
+        color: var(--text);
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 0.9rem 1.5rem;
+        border-radius: 999px;
+        font-weight: 700;
+        transition: 0.2s ease;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary), #7c3aed);
+        color: white;
+        box-shadow: 0 8px 30px rgba(139, 92, 246, 0.4);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+      }
+
+      .hero {
+        padding: 96px 0 72px;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 40px;
+        align-items: center;
+      }
+
+      .eyebrow {
+        display: inline-block;
+        padding: 0.45rem 0.8rem;
+        border-radius: 999px;
+        background: rgba(139, 92, 246, 0.12);
+        border: 1px solid rgba(139, 92, 246, 0.3);
+        color: #ddd6fe;
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 1rem 0 1rem;
+        font-size: clamp(2.6rem, 5vw, 5rem);
+        line-height: 1.05;
+      }
+
+      .lead {
+        max-width: 600px;
+        color: var(--muted);
+        font-size: 1.08rem;
+      }
+
+      .hero-actions {
+        margin-top: 2rem;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      .btn-secondary {
+        border: 1px solid var(--border);
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      .stats {
+        margin-top: 2.5rem;
+        display: flex;
+        gap: 28px;
+        flex-wrap: wrap;
+      }
+
+      .stat strong {
+        display: block;
+        font-size: 1.7rem;
+      }
+
+      .stat span {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .hero-card {
+        background: rgba(15, 23, 42, 0.72);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        padding: 26px;
+        box-shadow: 0 25px 60px rgba(15, 23, 42, 0.5);
+      }
+
+      .mini-window {
+        border-radius: 20px;
+        overflow: hidden;
+        background: #0b1220;
+        border: 1px solid var(--border);
+      }
+
+      .window-bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 16px;
+        background: rgba(255, 255, 255, 0.03);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+
+      .dot.red { background: #f87171; }
+      .dot.yellow { background: #fbbf24; }
+      .dot.green { background: #4ade80; }
+
+      .chart {
+        padding: 20px;
+      }
+
+      .bars {
+        height: 180px;
+        display: flex;
+        align-items: end;
+        gap: 14px;
+        padding: 18px 10px 10px;
+      }
+
+      .bars span {
+        flex: 1;
+        border-radius: 12px 12px 0 0;
+        background: linear-gradient(180deg, #a78bfa, #7c3aed);
+        box-shadow: 0 10px 20px rgba(124, 58, 237, 0.25);
+      }
+
+      .bars span:nth-child(1) { height: 38%; }
+      .bars span:nth-child(2) { height: 58%; }
+      .bars span:nth-child(3) { height: 46%; }
+      .bars span:nth-child(4) { height: 80%; }
+      .bars span:nth-child(5) { height: 70%; }
+      .bars span:nth-child(6) { height: 92%; }
+
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 18px;
+      }
+
+      .metric {
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 14px;
+        padding: 16px;
+        border: 1px solid var(--border);
+      }
+
+      .metric strong {
+        font-size: 1.3rem;
+        display: block;
+      }
+
+      .section {
+        padding: 80px 0;
+      }
+
+      .section-header {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      .section-header h2 {
+        margin: 0 0 10px;
+        font-size: clamp(2rem, 4vw, 3rem);
+      }
+
+      .section-header p {
+        color: var(--muted);
+        max-width: 650px;
+        margin: 0 auto;
+      }
+
+      .services {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 24px;
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 28px 24px;
+      }
+
+      .icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        font-size: 1.4rem;
+        margin-bottom: 18px;
+        background: rgba(139, 92, 246, 0.12);
+        border: 1px solid rgba(139, 92, 246, 0.2);
+      }
+
+      .card h3 {
+        margin: 0 0 10px;
+        font-size: 1.3rem;
+      }
+
+      .card p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .about {
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 26px;
+        align-items: center;
+      }
+
+      .feature-box {
+        background: rgba(255,255,255,0.02);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 26px;
+      }
+
+      .feature-list {
+        list-style: none;
+        margin: 24px 0 0;
+        padding: 0;
+        display: grid;
+        gap: 14px;
+      }
+
+      .feature-list li {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--muted);
+      }
+
+      .check {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: rgba(34, 197, 94, 0.12);
+        color: var(--secondary);
+        font-weight: 700;
+        border: 1px solid rgba(34, 197, 94, 0.2);
+      }
+
+      .cta {
+        padding: 80px 0 100px;
+      }
+
+      .cta-box {
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.16), rgba(34, 197, 94, 0.12));
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        padding: 32px 28px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+      }
+
+      .cta-box h3 {
+        margin: 0 0 8px;
+        font-size: clamp(1.8rem, 3vw, 2.6rem);
+      }
+
+      .cta-box p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 28px 0 40px;
+        color: var(--muted);
+      }
+
+      .footer-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+        flex-wrap: wrap;
+      }
+
+      @media (max-width: 860px) {
+        .hero-grid,
+        .about,
+        .services {
+          grid-template-columns: 1fr;
+        }
+
+        .nav-links {
+          display: none;
+        }
+
+        .cta-box {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container nav">
+        <a href="#" class="logo"><span>Bright</span>Wave</a>
+        <nav class="nav-links">
+          <a href="#services">Services</a>
+          <a href="#about">About</a>
+          <a href="#work">Work</a>
+          <a href="#contact">Contact</a>
+        </nav>
+        <a href="#contact" class="btn btn-primary">Book a Call</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-grid">
+          <div>
+            <span class="eyebrow">Digital growth studio</span>
+            <h1>Build a brand people remember.</h1>
+            <p class="lead">
+              We help startups and modern businesses turn bold ideas into polished digital experiences,
+              measurable growth, and customer trust.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="#contact">Get Started</a>
+              <a class="btn btn-secondary" href="#services">Explore Services</a>
+            </div>
+            <div class="stats">
+              <div class="stat">
+                <strong>120+</strong>
+                <span>Projects launched</span>
+              </div>
+              <div class="stat">
+                <strong>4.9/5</strong>
+                <span>Client satisfaction</span>
+              </div>
+              <div class="stat">
+                <strong>3x</strong>
+                <span>Average ROI</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-card">
+            <div class="mini-window">
+              <div class="window-bar">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+              </div>
+              <div class="chart">
+                <div class="bars">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <div class="metrics">
+                  <div class="metric">
+                    <strong>+68%</strong>
+                    <span>Traffic</span>
+                  </div>
+                  <div class="metric">
+                    <strong>+42%</strong>
+                    <span>Leads</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="services">
+        <div class="container">
+          <div class="section-header">
+            <h2>What we do</h2>
+            <p>
+              Strategy, design, and performance marketing working together to turn attention into action.
+            </p>
+          </div>
+
+          <div class="services">
+            <article class="card">
+              <div class="icon">✦</div>
+              <h3>Brand Strategy</h3>
+              <p>Clear positioning, messaging, and storytelling that help your brand stand out in crowded markets.</p>
+            </article>
+
+            <article class="card">
+              <div class="icon">▣</div>
+              <h3>Web Design</h3>
+              <p>Modern interfaces built to convert visitors into customers with clean UX and memorable visuals.</p>
+            </article>
+
+            <article class="card">
+              <div class="icon">↗</div>
+              <h3>Growth Marketing</h3>
+              <p>Campaign systems and optimization that improve acquisition, retention, and long-term revenue.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="about">
+        <div class="container about">
+          <div class="feature-box">
+            <span class="eyebrow">Why choose us</span>
+            <h2>Thoughtful execution. Real business results.</h2>
+            <ul class="feature-list">
+              <li><span class="check">✓</span> Strategy rooted in customer insight</li>
+              <li><span class="check">✓</span> Design systems built for scale</li>
+              <li><span class="check">✓</span> Data-informed optimization</li>
+              <li><span class="check">✓</span> Transparent, collaborative process</li>
+            </ul>
+          </div>
+
+          <div>
+            <p class="lead">
+              We combine creative thinking with measurable execution. From first impression to final conversion,
+              every touchpoint is designed to build trust and move your audience toward action.
+            </p>
+            <p class="lead">
+              Whether you are launching a new venture or refining an established brand, we help you move with confidence.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="cta" id="contact">
+        <div class="container">
+          <div class="cta-box">
+            <div>
+              <h3>Ready to grow your next big idea?</h3>
+              <p>Let’s build something impactful together.</p>
+            </div>
+            <a href="mailto:hello@brightwave.studio" class="btn btn-primary">hello@brightwave.studio</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container footer-inner">
+        <div>© 2026 BrightWave Studio</div>
+        <div>Strategy • Design • Growth</div>
+      </div>
+    </footer>
+  </body>
+</html>
